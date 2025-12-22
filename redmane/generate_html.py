@@ -14,26 +14,29 @@ DYNAMIC_VIEWER_TEMPLATE = """
     <title>REDMANE Data Summary</title>
     <link rel='stylesheet' href='output.css'>
     <style>
-        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #333; margin: 20px; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1, h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .summary-box { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 30px; }
+        body { font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 8px; }
+        h1 { color: #2c3e50; font-weight: 300; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        h2 { color: #34495e; font-weight: 500; font-size: 1.5em; margin-top: 30px; }
+        
+        .summary-box { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eef2f5; margin-bottom: 30px; }
         .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .stat-item { background: white; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #3498db; }
-        .stat-label { color: #7f8c8d; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-item { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #e9ecef; }
+        .stat-value { font-size: 28px; font-weight: 600; color: #3498db; margin-bottom: 5px; }
+        .stat-label { color: #95a5a6; font-size: 13px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f9fa; font-weight: 600; color: #2c3e50; }
-        tr:hover { background-color: #f1f1f1; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 15px; border: 1px solid #eef2f5; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eef2f5; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #7f8c8d; font-size: 14px; text-transform: uppercase; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fcfcfc; }
         
-        .upload-link { text-align: right; margin-bottom: 20px; }
-        .upload-btn { background: #27ae60; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
-        .upload-btn:hover { background: #219150; }
+        .upload-link { text-align: right; margin-bottom: 0; }
+        .upload-btn { background: #27ae60; color: white; padding: 10px 24px; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2); }
+        .upload-btn:hover { background: #219150; box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3); transform: translateY(-1px); }
         
-        #error-message { background: #fee; color: #c0392b; padding: 15px; border-radius: 5px; border: 1px solid #fcc; display: none; margin-bottom: 20px; }
-        .loading { text-align: center; padding: 50px; color: #7f8c8d; }
+        #error-message { background: #fff5f5; color: #e74c3c; padding: 20px; border-radius: 6px; border: 1px solid #ffebea; display: none; margin-bottom: 20px; }
+        .loading { text-align: center; padding: 60px; color: #95a5a6; font-style: italic; }
     </style>
 </head>
 <body>

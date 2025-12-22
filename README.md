@@ -1,31 +1,78 @@
 # REDMANE Metadata Generator
 
-A tool to generate RO-Crate metadata and HTML reports for REDMANE datasets.
+A Python package for scanning datasets, extracting metadata, and generating RO-Crate compatible JSON outputs and HTML summaries.
 
-## Installation
+## Overview
+
+This tool allows researchers to ingest datasets (sequencing and imaging data), categorize files, and generate a standardized metadata report. It supports:
+- **Recursive Scanning:** Automatically finds files in deep directory structures.
+- **Configurable File Types:** Custom `config.json` to define file extensions.
+- **Dynamic Reporting:** Generates an interactive HTML viewer for the metadata.
+- **RO-Crate Support:** Outputs standard research object metadata.
+
+## Quick Start (For Future Intakes)
+
+### 1. Installation
+This project is structured as a standard Python package.
 
 ```bash
-pip install .
+# Clone the repository
+git clone https://github.com/manishghoshal99/Redmane_Metadata_RO_Crate.git
+cd Redmane_Metadata_RO_Crate
+
+# Install the package in editable mode
+pip install -e .
 ```
 
-## Usage
+This installs the command-line tool `redmane-ingest`.
+
+### 2. Usage
+To scan a dataset directory:
 
 ```bash
-redmane-ingest --dataset /path/to/data
+redmane-ingest --dataset /path/to/your/data
 ```
 
-### Optional Arguments
+This will generate two files in your current directory:
+- `output.json`: The raw metadata (RO-Crate format).
+- `output.html`: The human-readable report.
 
-- `--file-types /path/to/file_types.json`: Specify a custom file types configuration. If not provided, the tool looks for `file_types.json` in the dataset directory, or uses built-in defaults.
+**Viewing the Report:**
+The HTML report loads the JSON dynamically. To view it locally (bypassing browser security restrictions), run a simple server:
 
-## Configuration
+```bash
+python -m http.server
+# Open http://localhost:8000/output.html
+```
 
-You can place a `file_types.json` in your dataset directory to override default file extensions:
+### 3. Configuration (`config.json`)
+You can define which file extensions correspond to which category (Raw, Processed, Summarised) by placing a `config.json` file in your dataset directory.
 
+**Example `config.json`:**
 ```json
 {
-  "raw": [".fastq", ".fastq.gz", ".bam"],
-  "processed": [".bam", ".cram"],
+  "raw": [".fastq", ".czi", ".nd2"],
+  "processed": [".bam", ".ome.tif"],
   "summarised": [".vcf", ".csv"]
 }
 ```
+
+If no config is found, the tool uses robust internal defaults covering common WGS and Imaging formats.
+
+## Project Structure
+
+```
+.
+├── redmane/                 # Main package source code
+│   ├── generator.py         # Core scanning and logic
+│   ├── generate_html.py     # HTML report generation
+│   ├── params.py            # Default constants
+│   └── sample_metadata/     # Internal reference data
+├── setup.py                 # Package installation config
+├── config.json              # Default configuration example
+└── README.md                # This documentation
+```
+
+## Development
+- **Adding new defaults:** Edit `redmane/params.py`.
+- **Changing HTML style:** Edit the template in `redmane/generate_html.py`.

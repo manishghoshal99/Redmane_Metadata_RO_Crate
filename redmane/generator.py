@@ -177,7 +177,7 @@ def generate_json(directory, output_file, file_types_path=None):
     if file_types_path:
         file_types = load_file_types(Path(file_types_path))
     else:
-        file_types = load_file_types(data_dir / "file_types.json")
+        file_types = load_file_types(data_dir / "config.json")
     
     # Scan
     files_map = scan_dataset(data_dir, file_types, metadata_dict, sample_to_patient, ORGANIZATION, crate)
