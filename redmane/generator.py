@@ -10,11 +10,9 @@ import pandas as pd
 import numpy as np
 
 def load_file_types(config_path=None):
-    """
-    Load file types from a JSON file.
-    If config_path is provided and exists, load from it.
-    Otherwise, return DEFAULT_FILE_TYPES.
-    """
+    # Load file types from a JSON file.
+    # If config_path is provided and exists, load from it.
+    # Otherwise, return DEFAULT_FILE_TYPES.
     if config_path and config_path.exists():
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
@@ -27,9 +25,7 @@ def load_file_types(config_path=None):
     return DEFAULT_FILE_TYPES
 
 def load_metadata(file_path):
-    """
-    Loads metadata from the JSON file and returns a dictionary keyed by the "Patient ID".
-    """
+    # Loads metadata from the JSON file and returns a dictionary keyed by the "Patient ID".
     if not file_path.exists():
         print(f"Warning: Metadata file not found at {file_path}")
         return {}
@@ -44,10 +40,8 @@ def load_metadata(file_path):
     return metadata_dict
 
 def load_sample_tb(file_path):
-    """
-    Loads the JSON file including the pairs of samples and corresponding patients.
-    Returns a dictionary mapping sample_id to patient_id.
-    """
+    # Loads the JSON file including the pairs of samples and corresponding patients.
+    # Returns a dictionary mapping sample_id to patient_id.
     if not file_path.exists():
         print(f"Warning: Sample to Patient mapping file not found at {file_path}")
         return {}
@@ -57,10 +51,8 @@ def load_sample_tb(file_path):
     return data
 
 def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_to_patient: dict, organization: str, crate: ROCrate):
-    """
-    Recursively scans the dataset directory and categorizes files.
-    Registers files in the RO-Crate.
-    """
+    # Recursively scans the dataset directory and categorizes files.
+    # Registers files in the RO-Crate.
     files_by_category = {cat: [] for cat in file_types}
     
     print(f" | Scanning {data_dir} recursively...")
@@ -157,9 +149,7 @@ def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_t
     return files_by_category
 
 def generate_json(directory, output_file, file_types_path=None):
-    """
-    Generates a JSON summary of files in the specified directory using RO-Crate.
-    """
+    # Generates a JSON summary of files in the specified directory using RO-Crate.
     data_dir = Path(directory).resolve()
     if not data_dir.is_dir():
         raise ValueError(f"The specified path '{directory}' is not a valid directory.")

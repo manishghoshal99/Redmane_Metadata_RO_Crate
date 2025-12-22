@@ -206,10 +206,8 @@ DYNAMIC_VIEWER_TEMPLATE = """
 """
 
 def generate_html_from_json(json_path, html_path):
-    """
-    Generates a static HTML viewer that dynamically loads the JSON content.
-    The html_path and json_path are assumed to be accessible relative to each other.
-    """
+    # Generates a static HTML viewer that dynamically loads the JSON content.
+    # The html_path and json_path are assumed to be accessible relative to each other.
     json_filename = Path(json_path).name
     html_filename = Path(html_path).name
     
