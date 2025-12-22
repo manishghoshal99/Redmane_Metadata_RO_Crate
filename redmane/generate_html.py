@@ -42,6 +42,11 @@ DYNAMIC_VIEWER_TEMPLATE = """
         
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Files Summary</h1>
+            <!-- Placeholder for filtering/search -->
+            <div style="margin: 0 20px; flex-grow: 1; max-width: 400px;">
+                <input type="text" placeholder="Filter files (coming soon)..." disabled 
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+            </div>
             <div class="upload-link">
                 <a href="https://data-registry.example.org/upload" class="upload-btn">Upload Metadata</a>
             </div>
