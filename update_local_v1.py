@@ -2,7 +2,6 @@
 import os
 import json
 from pathlib import Path
-from rocrate.rocrate import ROCrate
 from params import *  # Expects definitions for METADATA, RAW_FILE_TYPES, etc.
 from generate_html import generate_html_from_json
 import pandas as pd
@@ -27,7 +26,7 @@ def load_sample_tb(file_path):
     return data
 
 
-def process_files_for_raw(directory, file_types, crate, organization, cor_dict):
+def process_files_for_raw(directory, file_types, organization, cor_dict):
     """   
     Recursively scans the given directory for raw data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -56,14 +55,6 @@ def process_files_for_raw(directory, file_types, crate, organization, cor_dict):
                 total_size += file_size
 
                 sample_name, _ = os.path.splitext(file)  # name of FASTQ/FASTA is sample name
-                
-                # establish crate
-                crate.add_file(full_path, properties={
-                    "fileSize": f"{file_size}{FILE_SIZE_UNIT}", 
-                    "patient_id": cor_dict.get(sample_name, ""),
-                    "sample_id": sample_name,
-                    
-                })
 
                 # establish file name
                 file_dict = {
@@ -77,7 +68,7 @@ def process_files_for_raw(directory, file_types, crate, organization, cor_dict):
                 # print("Processing the Raw files")
                 print(f" | {file_path}  ~{file_size}{FILE_SIZE_UNIT}")
 
-                # check here to prevent duplpicates
+                # check here to prevent duplicates
                 if file_dict not in file_list:
                     file_list.append(file_dict)
 
@@ -90,7 +81,7 @@ def process_files_for_raw(directory, file_types, crate, organization, cor_dict):
 
 
 
-def process_files_for_summarized(directory, file_types, crate, organization, cor_dict):
+def process_files_for_summarized(directory, file_types, organization, cor_dict):
     """   
     Recursively scans the given directory for summary data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -120,11 +111,6 @@ def process_files_for_summarized(directory, file_types, crate, organization, cor
                     total_size += file_size
                     
                     df = pd.read_csv(full_path, index_col=0)
-                    crate.add_file(full_path, properties={
-                        "fileSize": f"{file_size}{FILE_SIZE_UNIT}",
-                        "patient_id": list(set([cor_dict.get(sample, "") for sample in list(df.index)])),
-                        "sample_id": list(df.index),
-                    })
 
                     file_dict = {
                         "file_name": file, 
@@ -149,11 +135,6 @@ def process_files_for_summarized(directory, file_types, crate, organization, cor
                     total_size += file_size
                     
                     df = pd.read_csv(full_path, index_col=0, delimiter="\t")
-                    crate.add_file(full_path, properties={
-                        "fileSize": f"{file_size}{FILE_SIZE_UNIT}",
-                        "patient_id": list(set([cor_dict.get(sample, "") for sample in list(df.index)])),
-                        "sample_id": list(df.index),
-                    })
 
                     file_dict = {
                         "file_name": file, 
@@ -178,7 +159,7 @@ def process_files_for_summarized(directory, file_types, crate, organization, cor
 
 
 
-def process_files_for_processed(directory, file_types, crate, organization, cor_dict):
+def process_files_for_processed(directory, file_types, organization, cor_dict):
     """   
     Recursively scans the given directory for processed data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -207,14 +188,6 @@ def process_files_for_processed(directory, file_types, crate, organization, cor_
                 total_size += file_size
 
                 sample_name, _ = os.path.splitext(file)  # name of FASTQ/FASTA is sample name
-                
-                # establish crate
-                crate.add_file(full_path, properties={
-                    "fileSize": f"{file_size}{FILE_SIZE_UNIT}", 
-                    "patient_id": cor_dict.get(sample_name, ""),
-                    "sample_id": sample_name,
-                    
-                })
 
                 # establish file name
                 file_dict = {
@@ -253,23 +226,19 @@ def generate_json(directory, output_file):
     if not os.path.isdir(directory):
         raise ValueError(f"The specified path '{directory}' is not a valid directory.")
     
-    # Create a new RO‑Crate instance and set top-level metadata.
-    crate = ROCrate()
-    crate.root_dataset.name = "Research Object"
-    crate.root_dataset.description = f"Research object created from files in {directory}"
-    
+  
     # Load metadata from the provided metadata file.
     cor_dict = load_sample_tb(SAMPLE_TO_PATIENT)
     organization = ORGANIZATION
     
     print(f"\nProcessing raw files ({', '.join(RAW_FILE_TYPES)})")
-    raw_files = process_files_for_raw(directory, RAW_FILE_TYPES, crate, organization, cor_dict)
+    raw_files = process_files_for_raw(directory, RAW_FILE_TYPES, organization, cor_dict)
     
     print(f"\nProcessing processed files ({', '.join(PROCESSED_FILE_TYPES)})")
-    processed_files = process_files_for_processed(directory, PROCESSED_FILE_TYPES, crate, organization, cor_dict)
+    processed_files = process_files_for_processed(directory, PROCESSED_FILE_TYPES, organization, cor_dict)
     
     print(f"\nProcessing summarised files ({', '.join(SUMMARISED_FILE_TYPES)})")
-    summarised_files = process_files_for_summarized(directory, SUMMARISED_FILE_TYPES, crate, organization, cor_dict)
+    summarised_files = process_files_for_summarized(directory, SUMMARISED_FILE_TYPES, organization, cor_dict)
     
     # Build the final output structure.
     output_data = {
@@ -284,10 +253,6 @@ def generate_json(directory, output_file):
         }
     }
     
-    # Write out the full RO‑Crate package to a folder (e.g. "rocrate").
-    rocrate_folder = Path(output_file).parent / "rocrate"
-    crate.write(rocrate_folder)
-    print(f"RO‑Crate written to {rocrate_folder}")
     
     # Write the custom JSON summary.
     with open(output_file, "w") as f:
