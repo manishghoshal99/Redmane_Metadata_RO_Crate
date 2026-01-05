@@ -10,28 +10,6 @@ import numpy as np
 
 
 
-def load_metadata(file_path):
-    """
-    Loads metadata from the JSON file and returns a dictionary keyed by the "Patient ID".
-    For example, if an entry has "Patient ID": "ICGC_0001", then a file named "ICGC_0001.fastq" 
-    will use that record.
-    
-    Args:
-        file_path (str): Path to the metadata JSON file.
-    
-    Returns:
-        dict: Mapping from "Patient ID" to the metadata entry.
-    """
-    with open(file_path, "r") as f:
-        data = json.load(f)
-    metadata_dict = {}
-    for entry in data:
-        key = entry.get("Patient ID")
-        if key:
-            metadata_dict[key] = entry
-    return metadata_dict
-
-
 
 def load_sample_tb(file_path):
     """
@@ -49,7 +27,7 @@ def load_sample_tb(file_path):
     return data
 
 
-def process_files_for_raw(directory, file_types, metadata_dict, crate, organization, cor_dict):
+def process_files_for_raw(directory, file_types, crate, organization, cor_dict):
     """   
     Recursively scans the given directory for raw data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -112,7 +90,7 @@ def process_files_for_raw(directory, file_types, metadata_dict, crate, organizat
 
 
 
-def process_files_for_summarized(directory, file_types, metadata_dict, crate, organization, cor_dict):
+def process_files_for_summarized(directory, file_types, crate, organization, cor_dict):
     """   
     Recursively scans the given directory for summary data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -200,7 +178,7 @@ def process_files_for_summarized(directory, file_types, metadata_dict, crate, or
 
 
 
-def process_files_for_processed(directory, file_types, metadata_dict, crate, organization, cor_dict):
+def process_files_for_processed(directory, file_types, crate, organization, cor_dict):
     """   
     Recursively scans the given directory for processed data files whose names end with one of the specified file_types.
     Each found file is registered in the RO‑Crate with enriched properties.
@@ -281,18 +259,17 @@ def generate_json(directory, output_file):
     crate.root_dataset.description = f"Research object created from files in {directory}"
     
     # Load metadata from the provided metadata file.
-    metadata_dict = load_metadata(METADATA)
     cor_dict = load_sample_tb(SAMPLE_TO_PATIENT)
     organization = ORGANIZATION
     
     print(f"\nProcessing raw files ({', '.join(RAW_FILE_TYPES)})")
-    raw_files = process_files_for_raw(directory, RAW_FILE_TYPES, metadata_dict, crate, organization, cor_dict)
+    raw_files = process_files_for_raw(directory, RAW_FILE_TYPES, crate, organization, cor_dict)
     
     print(f"\nProcessing processed files ({', '.join(PROCESSED_FILE_TYPES)})")
-    processed_files = process_files_for_processed(directory, PROCESSED_FILE_TYPES, metadata_dict, crate, organization, cor_dict)
+    processed_files = process_files_for_processed(directory, PROCESSED_FILE_TYPES, crate, organization, cor_dict)
     
     print(f"\nProcessing summarised files ({', '.join(SUMMARISED_FILE_TYPES)})")
-    summarised_files = process_files_for_summarized(directory, SUMMARISED_FILE_TYPES, metadata_dict, crate, organization, cor_dict)
+    summarised_files = process_files_for_summarized(directory, SUMMARISED_FILE_TYPES, crate, organization, cor_dict)
     
     # Build the final output structure.
     output_data = {

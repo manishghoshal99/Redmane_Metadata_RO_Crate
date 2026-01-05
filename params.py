@@ -8,6 +8,6 @@ RAW_FILE_TYPES = ['.fastq', '.fasta']
 PROCESSED_FILE_TYPES = ['.cram', '.bam']
 SUMMARISED_FILE_TYPES = ['.vcf', '.maf', '.csv', '.tsv']
 
-METADATA = "sample_metadata.json"
-SAMPLE_TO_PATIENT = "sample_to_patient.json"
+METADATA = "sample_metadata\sample_metadata.json"
+SAMPLE_TO_PATIENT = "sample_metadata\sample_to_patient.json"
 ORGANIZATION = "National Academy of Taiwan"

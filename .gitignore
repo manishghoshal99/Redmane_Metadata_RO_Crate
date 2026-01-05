@@ -169,3 +169,14 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# local config / secrets
+.env
+.env.*
+*.local
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
