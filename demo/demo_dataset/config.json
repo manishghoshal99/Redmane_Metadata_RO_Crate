@@ -1,0 +1,11 @@
+{
+    "raw_file_extensions": [
+        ".czi"
+    ],
+    "processed_file_extensions": [
+        ".bam"
+    ],
+    "summarised_file_extensions": [
+        ".csv"
+    ]
+}
