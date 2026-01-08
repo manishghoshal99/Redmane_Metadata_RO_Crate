@@ -9,15 +9,8 @@ OUTPUT_HTML_FILE_NAME = "output.html"
 CONVERT_FROM_BYTES = 1024
 FILE_SIZE_UNIT = "KB"
 
-# Default file types (can be overridden by file_types.json)
-DEFAULT_FILE_TYPES = {
-    "raw": [
-        ".fastq", ".fastq.gz", ".bam", ".cram", # Sequencing
-        ".czi", ".tif", ".tiff", ".nd2", ".lif", ".lsm", ".oib", ".oif" # Imaging
-    ],
-    "processed": [".bam", ".cram", ".ome.tif", ".ome.tiff"],
-    "summarised": [".vcf", ".maf", ".csv", ".tsv"]
-}
+# Default file types REMOVED. Strict config via config.json is now mandatory.
+# See config.py for validation logic.
 
 # Paths relative to this file
 SAMPLE_METADATA_DIR = BASE_DIR / "sample_metadata"
