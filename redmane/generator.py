@@ -1,28 +1,13 @@
-#!/usr/bin/env python3
-import json
 import sys
 import argparse
+import json
 from pathlib import Path
 from rocrate.rocrate import ROCrate
 from .params import *
 from .generate_html import generate_html_from_json
+from .config import find_config_path, load_config, normalize_and_validate_config
 import pandas as pd
 import numpy as np
-
-def load_file_types(config_path=None):
-    # Load file types from a JSON file.
-    # If config_path is provided and exists, load from it.
-    # Otherwise, return DEFAULT_FILE_TYPES.
-    if config_path and config_path.exists():
-        try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                print(f" | Loading file types from {config_path}")
-                return json.load(f)
-        except Exception as e:
-            print(f" | Warning: Failed to load {config_path}: {e}. Using defaults.")
-    
-    print(" | Using default file types.")
-    return DEFAULT_FILE_TYPES
 
 def load_metadata(file_path):
     # Loads metadata from the JSON file and returns a dictionary keyed by the "Patient ID".
@@ -112,6 +97,7 @@ def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_t
                                     p_ids.add(pid)
                             patient_ids_list = list(p_ids)
                     except Exception as e:
+                        # Requirements say: Do NOT crash. Log warning.
                         print(f"   ! Could not read summary file {file_path.name}: {e}")
                 except Exception:
                     pass
@@ -148,26 +134,32 @@ def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_t
     print(f" | Total size: {total_size} {FILE_SIZE_UNIT}")
     return files_by_category
 
-def generate_json(directory, output_file, file_types_path=None):
+def generate_json(directory, output_file):
     # Generates a JSON summary of files in the specified directory using RO-Crate.
     data_dir = Path(directory).resolve()
     if not data_dir.is_dir():
-        raise ValueError(f"The specified path '{directory}' is not a valid directory.")
+        print(f"\nERROR: The specified path '{directory}' does not exist or is not a directory.")
+        sys.exit(1)
     
     # Init RO-Crate
     crate = ROCrate()
     crate.root_dataset.name = "Research Object"
     crate.root_dataset.description = f"Research object created from files in {directory}"
     
-    # Load metadata and config
+    # Load metadata
     metadata_dict = load_metadata(METADATA)
     sample_to_patient = load_sample_tb(SAMPLE_TO_PATIENT)
     
-    # Load file types
-    if file_types_path:
-        file_types = load_file_types(Path(file_types_path))
-    else:
-        file_types = load_file_types(data_dir / "config.json")
+    # STRICT CONFIG enforcement
+    # 1. Find config path
+    config_path = find_config_path(data_dir)
+    print(f" | Found configuration: {config_path}")
+    
+    # 2. Load config
+    config_raw = load_config(config_path)
+    
+    # 3. Validate and normalize
+    file_types = normalize_and_validate_config(config_raw)
     
     # Scan
     files_map = scan_dataset(data_dir, file_types, metadata_dict, sample_to_patient, ORGANIZATION, crate)
@@ -195,22 +187,23 @@ def generate_json(directory, output_file, file_types_path=None):
 def main():
     parser = argparse.ArgumentParser(description="Generate metadata JSON and HTML report for a dataset.")
     parser.add_argument("--dataset", required=True, help="Path to the dataset directory.")
-    parser.add_argument("--file-types", help="Path to file_types.json configuration.")
     
     args = parser.parse_args()
     
     target_directory = args.dataset
-    print(f"\nSearching through {target_directory} .........")
+    print(f"\nProcess started for: {target_directory}")
     
     # Define output paths (Current Working Directory)
     output_file_path = Path.cwd() / OUTPUT_JSON_FILE_NAME
     output_html_path = Path.cwd() / OUTPUT_HTML_FILE_NAME
     
     try:
-        generate_json(target_directory, output_file_path, args.file_types)
+        generate_json(target_directory, output_file_path)
         generate_html_from_json(output_file_path, output_html_path)
+    except SystemExit:
+        sys.exit(1)
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Unexpected Error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
