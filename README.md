@@ -12,22 +12,23 @@ This tool allows researchers to ingest datasets (sequencing and imaging data), c
 
 ## Quick Start (For Future Intakes)
 
-### 1. Installation
-This project is structured as a standard Python package.
+### 1. Quick Start (3-Minute Demo)
+
+To see the tool in action using the included demo dataset:
 
 ```bash
-# Clone the repository
-git clone https://github.com/manishghoshal99/Redmane_Metadata_RO_Crate.git
-cd Redmane_Metadata_RO_Crate
-
-# Install the package in editable mode
+# 1. Install the package
 pip install -e .
+
+# 2. Run the demo
+redmane-ingest --dataset demo/demo_dataset
 ```
 
-This installs the command-line tool `redmane-ingest`.
+This will find the `config.json` in the demo folder and generate `output.json` and `output.html`.
 
-### 2. Usage
-To scan a dataset directory:
+### 2. Usage (Your Data)
+
+**IMPORTANT:** A `config.json` file is **MANDATORY** and must be placed at the root of your dataset directory. The tool will fail if this file is missing or invalid.
 
 ```bash
 redmane-ingest --dataset /path/to/your/data
@@ -51,13 +52,17 @@ You can define which file extensions correspond to which category (Raw, Processe
 **Example `config.json`:**
 ```json
 {
-  "raw": [".fastq", ".czi", ".nd2"],
-  "processed": [".bam", ".ome.tif"],
-  "summarised": [".vcf", ".csv"]
+  "raw_file_extensions": [".fastq", ".czi", ".nd2"],
+  "processed_file_extensions": [".bam", ".ome.tif"],
+  "summarised_file_extensions": [".vcf", ".csv", ".tsv"]
 }
 ```
 
-If no config is found, the tool uses robust internal defaults covering common WGS and Imaging formats.
+**Schema Requirements:**
+*   All keys are required: `raw_file_extensions`, `processed_file_extensions`, `summarised_file_extensions`.
+*   Values must be non-empty lists of strings.
+*   Extensions must start with a dot (e.g., `.fastq`).
+*   **Fail Loudly:** The tool will exit with an error if validation fails. No defaults are used.
 
 ## Project Structure
 
