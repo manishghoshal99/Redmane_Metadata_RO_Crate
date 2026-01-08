@@ -6,7 +6,7 @@
             "raw": [
                 {
                     "file_name": "XY001-CDI.czi",
-                    "file_size": 187,
+                    "file_size": 13,
                     "patient_id": "PatientID001_DiseaseX",
                     "sample_id": "XY001-CDI",
                     "directory": "./Raw/XY001-CDI.czi",
@@ -14,7 +14,7 @@
                 },
                 {
                     "file_name": "XY002-CDI.czi",
-                    "file_size": 233,
+                    "file_size": 13,
                     "patient_id": "PatientID002_DiseaseX",
                     "sample_id": "XY002-CDI",
                     "directory": "./Raw/XY002-CDI.czi",
@@ -22,7 +22,7 @@
                 },
                 {
                     "file_name": "XY003-CDI.czi",
-                    "file_size": 739,
+                    "file_size": 18,
                     "patient_id": "PatientID003_DiseaseX",
                     "sample_id": "XY003-CDI",
                     "directory": "./Raw/XY003-CDI.czi",
@@ -30,7 +30,7 @@
                 },
                 {
                     "file_name": "XY004-CDI.czi",
-                    "file_size": 5530,
+                    "file_size": 17,
                     "patient_id": "PatientID004_DiseaseX",
                     "sample_id": "XY004-CDI",
                     "directory": "./Raw/XY004-CDI.czi",
@@ -38,7 +38,7 @@
                 },
                 {
                     "file_name": "XY005-CDI.czi",
-                    "file_size": 7859,
+                    "file_size": 12,
                     "patient_id": "PatientID005_DiseaseX",
                     "sample_id": "XY005-CDI",
                     "directory": "./Raw/XY005-CDI.czi",
@@ -46,7 +46,7 @@
                 },
                 {
                     "file_name": "XY006-CDI.czi",
-                    "file_size": 8738,
+                    "file_size": 17,
                     "patient_id": "PatientID006_DiseaseX",
                     "sample_id": "XY006-CDI",
                     "directory": "./Raw/XY006-CDI.czi",
@@ -54,7 +54,7 @@
                 },
                 {
                     "file_name": "XY007-CDI.czi",
-                    "file_size": 1158,
+                    "file_size": 13,
                     "patient_id": "PatientID007_DiseaseX",
                     "sample_id": "XY007-CDI",
                     "directory": "./Raw/XY007-CDI.czi",
@@ -62,7 +62,7 @@
                 },
                 {
                     "file_name": "XY008-CDI.czi",
-                    "file_size": 9209,
+                    "file_size": 17,
                     "patient_id": "PatientID008_DiseaseX",
                     "sample_id": "XY008-CDI",
                     "directory": "./Raw/XY008-CDI.czi",
@@ -70,7 +70,7 @@
                 },
                 {
                     "file_name": "XY009-CDI.czi",
-                    "file_size": 22150,
+                    "file_size": 20,
                     "patient_id": "PatientID009_DiseaseX",
                     "sample_id": "XY009-CDI",
                     "directory": "./Raw/XY009-CDI.czi",
@@ -78,7 +78,7 @@
                 },
                 {
                     "file_name": "XY010-CDI.czi",
-                    "file_size": 22358,
+                    "file_size": 18,
                     "patient_id": "PatientID010_DiseaseX",
                     "sample_id": "XY010-CDI",
                     "directory": "./Raw/XY010-CDI.czi",
@@ -88,7 +88,7 @@
             "processed": [
                 {
                     "file_name": "XY001-CDI.tif",
-                    "file_size": 187,
+                    "file_size": 9,
                     "patient_id": "PatientID001_DiseaseX",
                     "sample_id": "XY001-CDI",
                     "directory": "./Processed/XY001-CDI.tif",
@@ -96,7 +96,7 @@
                 },
                 {
                     "file_name": "XY002-CDI.tif",
-                    "file_size": 233,
+                    "file_size": 5,
                     "patient_id": "PatientID002_DiseaseX",
                     "sample_id": "XY002-CDI",
                     "directory": "./Processed/XY002-CDI.tif",
@@ -104,7 +104,7 @@
                 },
                 {
                     "file_name": "XY003-CDI.tif",
-                    "file_size": 739,
+                    "file_size": 7,
                     "patient_id": "PatientID003_DiseaseX",
                     "sample_id": "XY003-CDI",
                     "directory": "./Processed/XY003-CDI.tif",
@@ -112,7 +112,7 @@
                 },
                 {
                     "file_name": "XY004-CDI.tif",
-                    "file_size": 5530,
+                    "file_size": 9,
                     "patient_id": "PatientID004_DiseaseX",
                     "sample_id": "XY004-CDI",
                     "directory": "./Processed/XY004-CDI.tif",
@@ -120,7 +120,7 @@
                 },
                 {
                     "file_name": "XY005-CDI.tif",
-                    "file_size": 7859,
+                    "file_size": 10,
                     "patient_id": "PatientID005_DiseaseX",
                     "sample_id": "XY005-CDI",
                     "directory": "./Processed/XY005-CDI.tif",
@@ -128,7 +128,7 @@
                 },
                 {
                     "file_name": "XY006-CDI.tif",
-                    "file_size": 8738,
+                    "file_size": 6,
                     "patient_id": "PatientID006_DiseaseX",
                     "sample_id": "XY006-CDI",
                     "directory": "./Processed/XY006-CDI.tif",
@@ -136,7 +136,7 @@
                 },
                 {
                     "file_name": "XY007-CDI.tif",
-                    "file_size": 1158,
+                    "file_size": 9,
                     "patient_id": "PatientID007_DiseaseX",
                     "sample_id": "XY007-CDI",
                     "directory": "./Processed/XY007-CDI.tif",
@@ -144,7 +144,7 @@
                 },
                 {
                     "file_name": "XY008-CDI.tif",
-                    "file_size": 9209,
+                    "file_size": 5,
                     "patient_id": "PatientID008_DiseaseX",
                     "sample_id": "XY008-CDI",
                     "directory": "./Processed/XY008-CDI.tif",
@@ -152,7 +152,7 @@
                 },
                 {
                     "file_name": "XY009-CDI.tif",
-                    "file_size": 22150,
+                    "file_size": 7,
                     "patient_id": "PatientID009_DiseaseX",
                     "sample_id": "XY009-CDI",
                     "directory": "./Processed/XY009-CDI.tif",
@@ -160,7 +160,7 @@
                 },
                 {
                     "file_name": "XY010-CDI.tif",
-                    "file_size": 22358,
+                    "file_size": 9,
                     "patient_id": "PatientID010_DiseaseX",
                     "sample_id": "XY010-CDI",
                     "directory": "./Processed/XY010-CDI.tif",
@@ -170,7 +170,7 @@
             "summarised": [
                 {
                     "file_name": "XY001-CDI.zarr",
-                    "file_size": 187,
+                    "file_size": 2,
                     "patient_id": "PatientID001_DiseaseX",
                     "sample_id": "XY001-CDI",
                     "directory": "./Summarised/XY001-CDI.zarr",
@@ -178,7 +178,7 @@
                 },
                 {
                     "file_name": "XY002-CDI.zarr",
-                    "file_size": 233,
+                    "file_size": 5,
                     "patient_id": "PatientID002_DiseaseX",
                     "sample_id": "XY002-CDI",
                     "directory": "./Summarised/XY002-CDI.zarr",
@@ -186,7 +186,7 @@
                 },
                 {
                     "file_name": "XY003-CDI.zarr",
-                    "file_size": 739,
+                    "file_size": 2,
                     "patient_id": "PatientID003_DiseaseX",
                     "sample_id": "XY003-CDI",
                     "directory": "./Summarised/XY003-CDI.zarr",
@@ -194,7 +194,7 @@
                 },
                 {
                     "file_name": "XY004-CDI.zarr",
-                    "file_size": 5530,
+                    "file_size": 1,
                     "patient_id": "PatientID004_DiseaseX",
                     "sample_id": "XY004-CDI",
                     "directory": "./Summarised/XY004-CDI.zarr",
@@ -202,7 +202,7 @@
                 },
                 {
                     "file_name": "XY005-CDI.zarr",
-                    "file_size": 7859,
+                    "file_size": 1,
                     "patient_id": "PatientID005_DiseaseX",
                     "sample_id": "XY005-CDI",
                     "directory": "./Summarised/XY005-CDI.zarr",
@@ -210,7 +210,7 @@
                 },
                 {
                     "file_name": "XY006-CDI.zarr",
-                    "file_size": 8738,
+                    "file_size": 4,
                     "patient_id": "PatientID006_DiseaseX",
                     "sample_id": "XY006-CDI",
                     "directory": "./Summarised/XY006-CDI.zarr",
@@ -218,7 +218,7 @@
                 },
                 {
                     "file_name": "XY007-CDI.zarr",
-                    "file_size": 1158,
+                    "file_size": 2,
                     "patient_id": "PatientID007_DiseaseX",
                     "sample_id": "XY007-CDI",
                     "directory": "./Summarised/XY007-CDI.zarr",
@@ -226,7 +226,7 @@
                 },
                 {
                     "file_name": "XY008-CDI.zarr",
-                    "file_size": 9209,
+                    "file_size": 4,
                     "patient_id": "PatientID008_DiseaseX",
                     "sample_id": "XY008-CDI",
                     "directory": "./Summarised/XY008-CDI.zarr",
@@ -234,7 +234,7 @@
                 },
                 {
                     "file_name": "XY009-CDI.zarr",
-                    "file_size": 22150,
+                    "file_size": 3,
                     "patient_id": "PatientID009_DiseaseX",
                     "sample_id": "XY009-CDI",
                     "directory": "./Summarised/XY009-CDI.zarr",
@@ -242,7 +242,7 @@
                 },
                 {
                     "file_name": "XY010-CDI.zarr",
-                    "file_size": 22358,
+                    "file_size": 2,
                     "patient_id": "PatientID010_DiseaseX",
                     "sample_id": "XY010-CDI",
                     "directory": "./Summarised/XY010-CDI.zarr",
