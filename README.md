@@ -84,3 +84,7 @@ You must define file extensions in `config.json` at the dataset root. No default
 
 - **Adding new defaults:** Edit `redmane/params.py`.
 - **Changing HTML style:** Edit the template in `redmane/generate_html.py`.
+
+
+---
+*Last updated: 2026-01-17 - Integration Complete*
