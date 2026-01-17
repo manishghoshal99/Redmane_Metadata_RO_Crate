@@ -1,5 +1,6 @@
 import json
 import sys
+# Config module: Implements 'Fail Loudly' policy for missing configurations.
 from pathlib import Path
 
 REQUIRED_KEYS = [
