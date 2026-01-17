@@ -6,6 +6,9 @@ redmane package directly.
 
 Usage:
     python3 update_local.py --dataset <dataset_directory>
+
+Example:
+    python3 update_local.py --dataset demo/demo_dataset
 """
 import sys
 import os
