@@ -183,3 +183,8 @@ __pycache__/
 *.pyc
 .DS_Store
 
+
+# Generated output files
+output.json
+output.html
+rocrate/
