@@ -1,0 +1,11 @@
+{
+    "raw_file_extensions": [
+        ".czi"
+    ],
+    "processed_file_extensions": [
+        ".dummy_proc"
+    ],
+    "summarised_file_extensions": [
+        ".dummy_sum"
+    ]
+}
