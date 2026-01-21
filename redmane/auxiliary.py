@@ -5,11 +5,7 @@ import pandas as pd
 from .params import CONVERT_FROM_BYTES, FILE_SIZE_UNIT
 
 def extract_sample_id(filename: str, extensions: list) -> str:
-    """
-    Extracts sample ID from filename by removing known extensions.
-    Handles multi-dot extensions like .tar.gz if they are in the list.
-    If no known extension is matched, falls back to splitting off the last dot.
-    """
+    # Extracts sample ID from filename by removing known extensions (longest match first).
     name_lower = filename.lower()
     # Sort extensions by length (descending) to match .fastq.gz before .gz
     sorted_exts = sorted(extensions, key=len, reverse=True)
@@ -22,10 +18,7 @@ def extract_sample_id(filename: str, extensions: list) -> str:
     return os.path.splitext(filename)[0]
 
 def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_to_patient: dict, organization: str, crate):
-    """
-    Recursively scans the dataset directory and categorizes files.
-    Registers files in the RO-Crate.
-    """
+    # Recursively scans the dataset directory, categorizes files, and registers them in the RO-Crate.
     files_by_category = {cat: [] for cat in file_types}
     
     print(f" | Scanning {data_dir} recursively...")

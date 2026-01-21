@@ -23,7 +23,7 @@ EXAMPLE_CONFIG = {
 }
 
 def print_error_and_exit(message):
-    """Prints a clear error message and exits with status 1."""
+    # Prints a clear error message and exits with status 1.
     print("\n" + "="*60)
     print("CONFIGURATION ERROR")
     print("="*60)
@@ -34,10 +34,7 @@ def print_error_and_exit(message):
     sys.exit(1)
 
 def find_config_path(dataset_dir):
-    """
-    Locates config.json in the dataset root.
-    Fails loudly if missing.
-    """
+    # Locates config.json in the dataset root and fails loudly if missing.
     config_path = dataset_dir / "config.json"
     if not config_path.exists():
         print_error_and_exit(
@@ -48,10 +45,7 @@ def find_config_path(dataset_dir):
     return config_path
 
 def load_config(config_path):
-    """
-    Parses config.json.
-    Fails loudly on JSON syntax errors.
-    """
+    # Parses config.json and fails loudly on JSON syntax errors.
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -67,11 +61,7 @@ def load_config(config_path):
         )
 
 def normalize_and_validate_config(config_dict):
-    """
-    Validates keys and values.
-    Handles aliases with warnings.
-    Returns a normalized dictionary with correct keys.
-    """
+    # Validates keys, handles aliases, and returns a normalized dictionary.
     normalized = {}
     
     # Check for required keys or aliases

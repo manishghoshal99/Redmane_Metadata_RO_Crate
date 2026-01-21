@@ -51,7 +51,14 @@ def generate_json(directory, output_file):
     
     # Load metadata
     metadata_dict = load_metadata(METADATA)
-    sample_to_patient = load_sample_tb(SAMPLE_TO_PATIENT)
+    
+    # Priority: dataset-level mapping > global mapping
+    dataset_mapping_file = data_dir / "patient_sample_mapping.json"
+    if dataset_mapping_file.exists():
+        print(f" | Found patient mapping: {dataset_mapping_file}")
+        sample_to_patient = load_sample_tb(dataset_mapping_file)
+    else:
+        sample_to_patient = load_sample_tb(SAMPLE_TO_PATIENT)
     
     # STRICT CONFIG enforcement
     # 1. Find config path
