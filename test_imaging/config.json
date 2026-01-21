@@ -3,9 +3,9 @@
         ".czi"
     ],
     "processed_file_extensions": [
-        ".dummy_proc"
+        ".tif"
     ],
     "summarised_file_extensions": [
-        ".dummy_sum"
+        ".zarr"
     ]
 }
