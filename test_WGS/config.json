@@ -1,11 +1,11 @@
 {
     "raw_file_extensions": [
-        ".dummy_raw"
+        ".fastq"
     ],
     "processed_file_extensions": [
         ".bam"
     ],
     "summarised_file_extensions": [
-        ".dummy_sum"
+        ".vcf"
     ]
 }
