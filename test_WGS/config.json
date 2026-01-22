@@ -6,6 +6,7 @@
         ".bam"
     ],
     "summarised_file_extensions": [
-        ".vcf"
+        ".vcf",
+        ".maf"
     ]
 }

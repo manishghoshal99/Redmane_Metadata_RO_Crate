@@ -68,12 +68,27 @@ def scan_dataset(data_dir: Path, file_types: dict, metadata_dict: dict, sample_t
             patient_ids_list = [patient_id] if patient_id else []
             
             # Special handling for summarised files (lookup internal CSV IDs)
-            if category == 'summarised' and file_path.suffix in ['.csv', '.tsv']:
+            if category == 'summarised' and file_path.suffix in ['.csv', '.tsv', '.maf']:
                 try:
-                    sep = '\t' if file_path.suffix == '.tsv' else ','
+                    # Determine separator
+                    if file_path.suffix == '.tsv':
+                        sep = '\t'
+                    elif file_path.suffix == '.maf':
+                        sep = '\t'  # MAF is typically tab-delimited
+                        # Skip comment lines starting with # for MAF if needed, but pandas read_csv handles comment='#' often
+                        # However, MAF usually has comments. Let's use comment='#' just in case.
+                    else:
+                        sep = ','
+
                     try:
-                        # Attempt to read index
-                        df = pd.read_csv(file_path, index_col=0, sep=sep)
+                        # Attempt to read index. For MAF/TSV/CSV.
+                        # Note: MAF files often have many comment lines. 
+                        # We'll use comment='#' to be safe for MAF/VCF-like text.
+                        extra_args = {}
+                        if file_path.suffix == '.maf':
+                             extra_args['comment'] = '#'
+
+                        df = pd.read_csv(file_path, index_col=0, sep=sep, **extra_args)
                         if not df.empty:
                             sample_ids_list = list(df.index.astype(str))
                             # Map all samples to patients

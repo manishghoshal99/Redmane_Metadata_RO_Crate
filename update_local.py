@@ -1,14 +1,13 @@
-#!/usr/bin/env python3
 """
 Wrapper script for REDMANE Metadata Generator.
 This script replaces the old update_local_v1.py logic by calling the
 redmane package directly.
 
 Usage:
-    python3 update_local.py --dataset <dataset_directory>
+    python3 update_local.py --dataset <dataset_directory> [--no-rocrate]
 
 Example:
-    python3 update_local.py --dataset demo/demo_dataset
+    python3 update_local.py --dataset demo/demo_dataset --no-rocrate
 """
 import sys
 import os

@@ -1,4 +1,5 @@
 {
     "XY001-AGRF": "PatientID001_DiseaseX",
-    "XY002-AGRF": "PatientID002_DiseaseY"
+    "XY002-AGRF": "PatientID002_DiseaseY",
+    "sample_maf": "PatientID_MAF"
 }

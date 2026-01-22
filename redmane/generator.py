@@ -37,7 +37,7 @@ def load_sample_tb(file_path):
 
 from .auxiliary import scan_dataset
 
-def generate_json(directory, output_file):
+def generate_json(directory, output_file, no_rocrate=False):
     # Generates a JSON summary of files in the specified directory using RO-Crate.
     data_dir = Path(directory).resolve()
     if not data_dir.is_dir():
@@ -45,9 +45,11 @@ def generate_json(directory, output_file):
         sys.exit(1)
     
     # Init RO-Crate
-    crate = ROCrate()
-    crate.root_dataset.name = "Research Object"
-    crate.root_dataset.description = f"Research object created from files in {directory}"
+    crate = None
+    if not no_rocrate:
+        crate = ROCrate()
+        crate.root_dataset.name = "Research Object"
+        crate.root_dataset.description = f"Research object created from files in {directory}"
     
     # Load metadata
     metadata_dict = load_metadata(METADATA)
@@ -84,9 +86,12 @@ def generate_json(directory, output_file):
     }
     
     # Write RO-Crate
-    rocrate_folder = Path(output_file).parent / "rocrate"
-    crate.write(rocrate_folder)
-    print(f"RO-Crate written to {rocrate_folder}")
+    if crate:
+        rocrate_folder = Path(output_file).parent / "rocrate"
+        crate.write(rocrate_folder)
+        print(f"RO-Crate written to {rocrate_folder}")
+    else:
+        print(" | RO-Crate generation skipped per --no-rocrate flag.")
     
     # Write JSON
     with open(output_file, "w") as f:
@@ -97,6 +102,7 @@ def generate_json(directory, output_file):
 def main():
     parser = argparse.ArgumentParser(description="Generate metadata JSON and HTML report for a dataset.")
     parser.add_argument("--dataset", required=True, help="Path to the dataset directory.")
+    parser.add_argument("--no-rocrate", action="store_true", help="Disable RO-Crate generation.")
     
     args = parser.parse_args()
     
@@ -108,7 +114,7 @@ def main():
     output_html_path = Path.cwd() / OUTPUT_HTML_FILE_NAME
     
     try:
-        generate_json(target_directory, output_file_path)
+        generate_json(target_directory, output_file_path, no_rocrate=args.no_rocrate)
         generate_html_from_json(output_file_path, output_html_path)
     except SystemExit:
         sys.exit(1)
