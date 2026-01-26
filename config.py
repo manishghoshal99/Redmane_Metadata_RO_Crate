@@ -7,6 +7,12 @@ REQUIRED_KEYS = [
     "sample_to_patient"
 ]
 
+ALIASES = {
+    "raw_file_types": "raw_file_extensions",
+    "processed_file_types": "processed_file_extensions",
+    "summarised_file_types": "summarised_file_extensions"
+}
+
 def print_error_and_exit(message):
     print(f"\n[ERROR] {message}")
     sys.exit(1)
@@ -14,6 +20,16 @@ def print_error_and_exit(message):
 def validate_config(config_dict, config_path):
     if not isinstance(config_dict, dict):
         print_error_and_exit(f"Config file must be a JSON object. File: {config_path}")
+
+    # Normalize aliases
+    for alias, canonical in ALIASES.items():
+        if alias in config_dict:
+            if canonical not in config_dict:
+                print(f"WARNING: '{alias}' is deprecated. Please use '{canonical}' instead.")
+                config_dict[canonical] = config_dict.pop(alias)
+            else:
+                # Both present, prefer canonical but warn
+                print(f"WARNING: Both '{alias}' and '{canonical}' found. Ignoring '{alias}'.")
 
     for key in REQUIRED_KEYS:
         if key not in config_dict:
