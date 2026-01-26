@@ -1,82 +1,149 @@
-# to be cleaned into a function for extracting sample and patient ID from summarised file types 
-# where sample ID is not in the file name
 
 import os
+from pathlib import Path
 import pandas as pd
-from params import * 
 
-def process_files_for_summarised(directory, file_types, organization, cor_dict):
-    """   
-    Recursively scans the given directory for summary data files whose names end with one of the specified file_types.
-    Each found file is registered in the RO‑Crate with enriched properties.
-    The file’s base name (without extension) is used to look up its metadata record.
+# Constants can be defined here or imported. 
+# Since we removed params.py, we define them here or expect them passed.
+CONVERT_FROM_BYTES = 1024
+FILE_SIZE_UNIT = "KB"
+
+def extract_sample_id(filename: str, extensions: list) -> str:
+    # Extracts sample ID from filename by removing known extensions (longest match first).
+    name_lower = filename.lower()
+    # Sort extensions by length (descending) to match .fastq.gz before .gz
+    sorted_exts = sorted(extensions, key=len, reverse=True)
     
-    Args:
-        directory (str): The directory to search.
-        file_types (list): List of file extensions to match.
-        metadata_dict (dict): Dictionary mapping "Patient ID" to metadata entries.
-        crate (ROCrate): The RO‑Crate instance in which to register files.
-        organization (str): Organization that the data files are from, can be modified in params.py
-        cor_dict: The dictionary containing the keys as sample_id and values as patient_id
-    
-    Returns:
-        list: A list of dictionaries summarizing the file details.
+    for ext in sorted_exts:
+        if name_lower.endswith(ext.lower()):
+            return filename[:-len(ext)]
+            
+    # Fallback: simple splitext
+    return os.path.splitext(filename)[0]
+
+def scan_dataset(data_dir: Path, config: dict, organization: str = "WEHI"):
     """
-    file_list = []
-    total_size = 0
-    for root, _, files in os.walk(directory):
-        for file in files:
-            if os.path.splitext(file)[1] in SUMMARISED_FILE_TYPES:
-                if  os.path.splitext(file)[1] == '.csv':                
-                    full_path = os.path.join(root, file)
-                    relative_path = os.path.relpath(full_path, directory)
-                    file_path = f"./{relative_path}"
-                    file_size = round(os.path.getsize(full_path) / CONVERT_FROM_BYTES)
-                    total_size += file_size
-                    
-                    df = pd.read_csv(full_path, index_col=0)
+    Recursively scans the dataset directory, categorizes files based on unified config,
+    and returns a structured list of file metadata.
+    """
+    # Map simpler keys for mapping logic
+    file_types = {
+        "raw": config["raw_file_extensions"],
+        "processed": config["processed_file_extensions"],
+        "summarised": config["summarised_file_extensions"]
+    }
+    sample_to_patient = config["sample_to_patient"]
+    counts_format = config.get("counts_format", False)
 
-                    file_dict = {
-                        "file_name": file, 
-                        "file_size": file_size, 
-                        "patient_id": list(set([cor_dict.get(sample, "") for sample in list(df.index)])),
-                        "sample_id": list(df.index),
-                        "directory": file_path,
-                        "organization": organization
-                    }
-                    # print("Processing the summarised files")
-                    print(f" | {file_path}  ~{file_size}{FILE_SIZE_UNIT}")
-
-                    # check here to prevent duplpicates
-                    if file_dict not in file_list:
-                        file_list.append(file_dict)
-
-                elif os.path.splitext(file)[1] == '.tsv':
-                    full_path = os.path.join(root, file)
-                    relative_path = os.path.relpath(full_path, directory)
-                    file_path = f"./{relative_path}"
-                    file_size = round(os.path.getsize(full_path) / CONVERT_FROM_BYTES)
-                    total_size += file_size
-                    
-                    df = pd.read_csv(full_path, index_col=0, delimiter="\t")
-
-                    file_dict = {
-                        "file_name": file, 
-                        "file_size": file_size, 
-                        "patient_id": list(set([cor_dict.get(sample, "") for sample in list(df.index)])),
-                        "sample_id": list(df.index),
-                        "directory": file_path,
-                        "organization": organization
-                    }
-                    print(f" | {file_path}  ~{file_size}{FILE_SIZE_UNIT}")
-
-                    # check here to prevent duplpicates
-                    if file_dict not in file_list:
-                        file_list.append(file_dict)
-                        
-    if not file_list:
-        print(" | No files found for file types:", file_types)
-    else:
-        print(f" | Total size for these files: {total_size}{FILE_SIZE_UNIT}")
+    files_by_category = {cat: [] for cat in file_types}
     
-    return file_list
+    print(f" | Scanning {data_dir} recursively...")
+    
+    # Flatten file types for easy lookup and extraction
+    all_extensions = []
+    ext_to_cat = {}
+    for cat, extensions in file_types.items():
+        files_by_category[cat] = [] # Ensure keys exist
+        for ext in extensions:
+            ext_to_cat[ext.lower()] = cat
+            all_extensions.append(ext)
+
+    total_size = 0
+    # Sort extensions for matching
+    sorted_exts_match = sorted(ext_to_cat.keys(), key=len, reverse=True)
+
+    for file_path in data_dir.rglob('*'):
+        if file_path.is_file():
+            if file_path.name.startswith('.'):
+                continue
+                
+            name = file_path.name.lower()
+            category = None
+            
+            for ext in sorted_exts_match:
+                if name.endswith(ext):
+                    category = ext_to_cat[ext]
+                    break
+            
+            if category is None:
+                continue
+
+            # Calculate size
+            size_bytes = file_path.stat().st_size
+            size_kb = round(size_bytes / CONVERT_FROM_BYTES)
+            total_size += size_kb
+            
+            # Determine Sample ID using robust extraction
+            sample_id = extract_sample_id(file_path.name, all_extensions)
+            
+            # Look up patient ID (default lookup)
+            patient_id = sample_to_patient.get(sample_id, "")
+            
+            sample_ids_list = [sample_id]
+            patient_ids_list = [patient_id] if patient_id else []
+            
+            # Special handling for summarised files
+            if category == 'summarised' and file_path.suffix in ['.csv', '.tsv', '.maf']:
+                try:
+                    # Determine separator
+                    sep = ','
+                    if file_path.suffix == '.tsv':
+                        sep = '\t'
+                    elif file_path.suffix == '.maf':
+                        sep = '\t' 
+                    
+                    extra_args = {}
+                    if file_path.suffix == '.maf':
+                         extra_args['comment'] = '#'
+
+                    # If using counts_format for TSV, reading differs
+                    if counts_format and file_path.suffix == '.tsv':
+                         # Read first row (header) as samples
+                         df = pd.read_csv(file_path, sep=sep, index_col=0, nrows=0)
+                         curr_samples = list(df.columns)
+                         if curr_samples:
+                            sample_ids_list = curr_samples
+                    else:
+                        # Standard behaviour: read index column
+                        df = pd.read_csv(file_path, index_col=0, sep=sep, **extra_args)
+                        if not df.empty:
+                            sample_ids_list = list(df.index.astype(str))
+
+                    # Map all collected samples to patients
+                    p_ids = set()
+                    for s in sample_ids_list:
+                        pid = sample_to_patient.get(s)
+                        if pid:
+                            p_ids.add(pid)
+                    patient_ids_list = list(p_ids)
+
+                except Exception as e:
+                    # e.g. empty file or parsing error
+                    # We continue gracefully, treating it as a single-sample file (bucketed by filename)
+                    # print(f"   ! Could not read summary file {file_path.name}: {e}")
+                    pass
+
+            # Format for output
+            final_sample_id = sample_ids_list if len(sample_ids_list) > 1 else sample_ids_list[0]
+            final_patient_id = patient_ids_list if len(patient_ids_list) > 1 else (patient_ids_list[0] if patient_ids_list else "")
+            
+            try:
+                rel_path = file_path.relative_to(data_dir)
+            except ValueError:
+                rel_path = file_path.name
+            
+            record = {
+                "file_name": file_path.name,
+                "file_size": size_kb,
+                "directory": f"./{rel_path}",
+                "organization": organization,
+                "sample_id": final_sample_id,
+                "patient_id": final_patient_id
+            }
+            
+            files_by_category[category].append(record)
+            
+            # We can log here if needed, or rely on the main script's verbose flag to print the result
+
+    print(f" | Total size: {total_size} {FILE_SIZE_UNIT}")
+    return files_by_category

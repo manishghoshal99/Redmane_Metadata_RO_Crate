@@ -1,0 +1,16 @@
+{
+    "raw_file_extensions": [
+        ".docx",
+        ".txt"
+    ],
+    "processed_file_extensions": [
+        ".pdf"
+    ],
+    "summarised_file_extensions": [
+        ".csv"
+    ],
+    "sample_to_patient": {
+        "doc_sample1": "PATIENT_A",
+        "doc_sample2": "PATIENT_B"
+    }
+}

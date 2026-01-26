@@ -1,9 +1,8 @@
 import json
 from pathlib import Path
 from html import escape
-from params import ORGANIZATION
 
-def generate_html_from_json(json_path, html_path):
+def generate_html_from_json(json_path, html_path, organization="WEHI"):
     """
     Dummy implementation that creates a simple HTML file from JSON.
     """
@@ -38,7 +37,7 @@ def generate_html_from_json(json_path, html_path):
             f"<td>{escape(file.get('patient_id', ''))}</td>"   # patient id
             f"<td>{sample_ids}</td>"                           # sample id
             f"<td>{escape(file.get('directory', ''))}</td>"    # file directory (subordinated location of the assigned directory)
-            f"<td>{ORGANIZATION}</td>"                         # which organization that the files are from
+            f"<td>{organization}</td>"                         # which organization that the files are from
             "</tr>"
         )
     html_lines.append("</table>")
@@ -60,7 +59,7 @@ def generate_html_from_json(json_path, html_path):
             f"<td>{escape(file.get('patient_id', ''))}</td>"
             f"<td>{sample_ids}</td>"
             f"<td>{escape(file.get('directory', ''))}</td>"
-            f"<td>{ORGANIZATION}</td>"
+            f"<td>{organization}</td>"
             "</tr>"
         )
     html_lines.append("</table>")
@@ -85,7 +84,7 @@ def generate_html_from_json(json_path, html_path):
             f"<td>{file.get('patient_id', '')}</td>"
             f"<td>{sample_ids}</td>"
             f"<td>{escape(file.get('directory', ''))}</td>"
-            f"<td>{ORGANIZATION}</td>"
+            f"<td>{organization}</td>"
             "</tr>"
         )
     html_lines.append("</table>")
