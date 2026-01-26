@@ -1,0 +1,12 @@
+{
+    "raw_file_extensions": [
+        ".czi"
+    ],
+    "processed_file_extensions": [
+        ".tif"
+    ],
+    "summarised_file_extensions": [
+        ".zarr"
+    ],
+    "sample_to_patient": {}
+}

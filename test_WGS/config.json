@@ -1,0 +1,12 @@
+{
+    "raw_file_extensions": [
+        ".fastq"
+    ],
+    "processed_file_extensions": [
+        ".bam"
+    ],
+    "summarised_file_extensions": [
+        ".vcf"
+    ],
+    "sample_to_patient": {}
+}

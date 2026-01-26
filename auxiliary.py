@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 from pathlib import Path
 
@@ -28,7 +29,23 @@ def scan_dataset(data_dir, config, organization):
         ext_map[ext.lower()] = "summarised"
         
     all_exts = list(ext_map.keys())
-    sample_map = config["sample_to_patient"]
+    
+    # Mapping priority: patient_sample_mapping.json > config.json
+    sample_map = config.get("sample_to_patient", {})
+    mapping_file = data_dir / "patient_sample_mapping.json"
+    if mapping_file.exists():
+        try:
+            with open(mapping_file) as f:
+                legacy_map = json.load(f)
+                if isinstance(legacy_map, dict):
+                    # Legacy map takes precedence or merges? 
+                    # Prompt says "Preserve priority order of using dataset-level... when present"
+                    # We will merge, preferring legacy for conflicts
+                    sample_map.update(legacy_map)
+                    print(f" | Loaded legacy mapping from {mapping_file.name}")
+        except Exception as e:
+            print(f" | WARNING: Failed to load legacy mapping: {e}")
+
     counts_format = config.get("counts_format", False)
     
     total_size = 0
@@ -61,7 +78,7 @@ def scan_dataset(data_dir, config, organization):
         s_ids = [sample_id]
         p_ids = [patient_id] if patient_id else []
 
-        # Summarised CSV/TSV handling
+        # Summarised CSV/TSV/MAF handling
         if category == "summarised" and path.suffix in [".csv", ".tsv", ".maf"]:
             try:
                 sep = "\t" if path.suffix in [".tsv", ".maf"] else ","
