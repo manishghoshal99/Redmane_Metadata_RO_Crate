@@ -1,0 +1,70 @@
+{
+    "data": {
+        "location": "/Users/manishghoshal/Downloads/REDMANE-metadata-generator-with-RO-Crate-main/test_WGS",
+        "file_size_unit": "KB",
+        "files": {
+            "raw": [
+                {
+                    "file_name": "XY002-AGRF.fastq",
+                    "file_size": 0,
+                    "directory": "./Raw/XY002-AGRF.fastq",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY002-AGRF",
+                    "patient_id": "PatientID002_DiseaseY"
+                },
+                {
+                    "file_name": "XY001-AGRF.fastq",
+                    "file_size": 0,
+                    "directory": "./Raw/XY001-AGRF.fastq",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY001-AGRF",
+                    "patient_id": "PatientID001_DiseaseX"
+                }
+            ],
+            "processed": [
+                {
+                    "file_name": "XY002.bam",
+                    "file_size": 0,
+                    "directory": "./Processed/XY002.bam",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY002",
+                    "patient_id": ""
+                },
+                {
+                    "file_name": "XY001.bam",
+                    "file_size": 0,
+                    "directory": "./Processed/XY001.bam",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY001",
+                    "patient_id": ""
+                }
+            ],
+            "summarised": [
+                {
+                    "file_name": "XY002.vcf",
+                    "file_size": 0,
+                    "directory": "./Summarised/XY002.vcf",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY002",
+                    "patient_id": ""
+                },
+                {
+                    "file_name": "XY001.vcf",
+                    "file_size": 0,
+                    "directory": "./Summarised/XY001.vcf",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "XY001",
+                    "patient_id": ""
+                },
+                {
+                    "file_name": "sample_maf.maf",
+                    "file_size": 0,
+                    "directory": "./Summarised/sample_maf.maf",
+                    "organization": "National Academy of Taiwan",
+                    "sample_id": "GeneX",
+                    "patient_id": ""
+                }
+            ]
+        }
+    }
+}

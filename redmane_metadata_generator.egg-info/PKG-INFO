@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: redmane-metadata-generator
+Version: 0.2.0
+Summary: Metadata generator and RO-Crate packager for REDMANE datasets
+Author: REDMANE Team
+Requires-Python: >=3.7
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: rocrate
+Dynamic: author
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

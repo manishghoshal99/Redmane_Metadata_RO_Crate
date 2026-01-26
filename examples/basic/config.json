@@ -1,0 +1,14 @@
+{
+    "raw_file_extensions": [
+        ".txt"
+    ],
+    "processed_file_extensions": [
+        ".pdf"
+    ],
+    "summarised_file_extensions": [
+        ".csv"
+    ],
+    "sample_to_patient": {
+        "S1": "P1"
+    }
+}

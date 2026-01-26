@@ -1,98 +1,45 @@
 import json
-from pathlib import Path
 from html import escape
-from params import ORGANIZATION
 
-def generate_html_from_json(json_path, html_path):
-    """
-    Dummy implementation that creates a simple HTML file from JSON.
-    """
-    with open(json_path, "r") as f:
-        data = json.load(f)
-    summarized_files = data["data"]["files"]["summarised"]
-    processed_files = data["data"]["files"]["processed"]
-    raw_files = data["data"]["files"]["raw"]
+def generate_html(json_path, html_path, organization):
+    with open(json_path) as f:
+        data = json.load(f)["data"]
+        
+    lines = [
+        "<html><head><title>Data Summary</title>",
+        "<style>table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid #ddd; padding: 8px; } th { background-color: #f2f2f2; }</style>",
+        "</head><body>",
+        f"<h1>Files Summary</h1><p><strong>Location:</strong> {escape(data['location'])}</p>"
+    ]
     
-    html_lines = [
-    "<html>", 
-    "<head><title>Data Files Summary</title><link rel='stylesheet' href='output.css'></head>", 
-    "<body>", 
-    "<h1>Files summary</h1>", 
-    f"<p><strong>Location:</strong> {escape(data['data']['location'])}</p>"  # Here shows the directory, meaning the assigned directory for the script
-    ]
+    files = data["files"]
+    for cat in ["raw", "processed", "summarised"]:
+        if not files[cat]:
+            continue
+            
+        lines.append(f"<h2>{cat.capitalize()} Files</h2>")
+        lines.append("<table><tr><th>File Name</th><th>Size (KB)</th><th>Patient ID</th><th>Sample ID</th><th>Path</th><th>Organization</th></tr>")
+        
+        for f in files[cat]:
+            s_id = f["sample_id"]
+            if isinstance(s_id, list): s_id = ", ".join(map(str, s_id))
+            
+            p_id = f["patient_id"]
+            if isinstance(p_id, list): p_id = ", ".join(map(str, p_id))
 
-    # Generating table for Raw files
-    html_lines += [
-        "<h2>Raw Files</h2>", 
-        "<table border='1' cellpadding = '5'",
-        "<tr><th>File Name</th><th>File Size (KB)</th><th>Patient ID</th><th>Sample ID</th><th>Directory</th><th>Organization</th></tr>"
-    ]
-
-    for file in raw_files:
-        sample_ids = file.get("sample_id", [])
-        sample_ids = ', '.join(escape(str(s)) for s in sample_ids) if isinstance(sample_ids, list) else escape(str(sample_ids))
-        html_lines.append(
-            "<tr>"
-            f"<td>{escape(file.get('file_name', ''))}</td>"    # file name
-            f"<td>{file.get('file_size', '')}</td>"            # file size
-            f"<td>{escape(file.get('patient_id', ''))}</td>"   # patient id
-            f"<td>{sample_ids}</td>"                           # sample id
-            f"<td>{escape(file.get('directory', ''))}</td>"    # file directory (subordinated location of the assigned directory)
-            f"<td>{ORGANIZATION}</td>"                         # which organization that the files are from
-            "</tr>"
-        )
-    html_lines.append("</table>")
-
-
-    # Processed files
-    html_lines += [
-        "<h2>Processed Files</h2>",
-        "<table border='1' cellpadding='5'>",
-        "<tr><th>File Name</th><th>File Size (KB)</th><th>Patient ID</th><th>Sample IDs</th><th>Directory</th><th>Organization</th></tr>"
-    ]
-    for file in processed_files:
-        sample_ids = file.get("sample_id", [])
-        sample_ids = ', '.join(escape(str(s)) for s in sample_ids) if isinstance(sample_ids, list) else escape(str(sample_ids))
-        html_lines.append(
-            "<tr>"
-            f"<td>{escape(file.get('file_name', ''))}</td>"
-            f"<td>{file.get('file_size', '')}</td>"
-            f"<td>{escape(file.get('patient_id', ''))}</td>"
-            f"<td>{sample_ids}</td>"
-            f"<td>{escape(file.get('directory', ''))}</td>"
-            f"<td>{ORGANIZATION}</td>"
-            "</tr>"
-        )
-    html_lines.append("</table>")
-
-
-    # Summarized files
-    html_lines += [
-        "<h2>Summarised Files</h2>",
-        "<table border='1' cellpadding='5'>",
-        "<tr><th>File Name</th><th>File Size (KB)</th><th>Patient ID</th><th>Sample IDs</th><th>Directory</th><th>Organization</th></tr>"
-    ]
-    for file in summarized_files:
-        sample_ids = file.get("sample_id", [])
-        if isinstance(sample_ids, list):
-            sample_ids = ', '.join(escape(str(s)) for s in sample_ids)
-        else:
-            sample_ids = escape(str(sample_ids))
-        html_lines.append(
-            "<tr>"
-            f"<td>{escape(file.get('file_name', ''))}</td>"
-            f"<td>{file.get('file_size', '')}</td>"
-            f"<td>{file.get('patient_id', '')}</td>"
-            f"<td>{sample_ids}</td>"
-            f"<td>{escape(file.get('directory', ''))}</td>"
-            f"<td>{ORGANIZATION}</td>"
-            "</tr>"
-        )
-    html_lines.append("</table>")
-
-    # Close HTML
-    html_lines += ["</body>", "</html>"]
+            lines.append("<tr>")
+            lines.append(f"<td>{escape(f['file_name'])}</td>")
+            lines.append(f"<td>{f['file_size']}</td>")
+            lines.append(f"<td>{escape(str(p_id))}</td>")
+            lines.append(f"<td>{escape(str(s_id))}</td>")
+            lines.append(f"<td>{escape(f['directory'])}</td>")
+            lines.append(f"<td>{escape(organization)}</td>")
+            lines.append("</tr>")
+        lines.append("</table>")
+        
+    lines.append("</body></html>")
     
     with open(html_path, "w") as f:
-        f.write("\n".join(html_lines))
-    print(f"HTML report generated at: {html_path}")
+        f.write("\n".join(lines))
+        
+    print(f"HTML report: {html_path}")

@@ -1,198 +1,59 @@
 #!/usr/bin/env python3
-import os
 import json
+import argparse
+import sys
 from pathlib import Path
-from params import *  # Expects definitions for METADATA, RAW_FILE_TYPES, etc.
-from generate_html import generate_html_from_json
-from auxiliary import process_files_for_summarised
-import pandas as pd
-import numpy as np
 
+from config import validate_config
+from auxiliary import scan_dataset
+from generate_html import generate_html
 
+ORGANIZATION = "WEHI"
 
-def load_json(file_path):
-    """
-    Loads the JSON file including the pairs of samples and corresponding patients and return a dictionary.
-    The keys are sample_id and values are patient_id in this dictionary.
-
-    Args:
-        file_path (str): Path to the metadata JSON file.
-
-    Returns:
-        dict: Mapping from "Patient ID" to the metadata entry.
-    """
-    with open(file_path, "r") as f:
-        data = json.load(f)
-    return data
-
-
-def filter_files(directory, config):
-    """   
-    Recursively scans the given directory for raw data files whose names end with one of the specified file_types.
-    Each found file has the fullpath appended to the relevant list.
+def main():
+    parser = argparse.ArgumentParser(description="Redmane Metadata Generator")
+    parser.add_argument("dataset", type=Path, help="Dataset directory")
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
+    parser.add_argument("--counts-tsv", action="store_true", help="Treat TSV as counts matrix (samples in header)")
+    args = parser.parse_args()
     
-    Args:
-        directory (str): The directory to search.
-        raw (list): List of raw file extensions to match.
+    data_dir = args.dataset.resolve()
+    if not data_dir.is_dir():
+        sys.exit(f"[ERROR] Directory not found: {data_dir}")
+        
+    # Config
+    try:
+        with open(data_dir / "config.json") as f:
+            raw_config = json.load(f)
+        config = validate_config(raw_config, str(data_dir / "config.json"))
+    except Exception as e:
+        sys.exit(f"[ERROR] Config error: {e}")
+
+    if args.counts_tsv:
+        config["counts_format"] = True
+        
+    # Scan
+    files, size = scan_dataset(data_dir, config, ORGANIZATION)
     
-    Returns:
-        dictionary: A dictionary of lists containing the full paths for raw, processed and summarised files respectively.
-    """    
-    bucket_by_ext = {}
-
-    for ext in config["raw_file_types"]:
-        bucket_by_ext[ext.lower()] = "raw"
-
-    for ext in config["processed_file_types"]:
-        bucket_by_ext[ext.lower()] = "processed"
-
-    for ext in config["summarised_file_types"]:
-        bucket_by_ext[ext.lower()] = "summarised"
-
-    file_path_dict = {
-        bucket.replace("_file_types", ""): []
-        for bucket in config
-    }
-
-    # file_path_dict = {"raw":[], "processed":[], "summarised":[]}
-
-    for root, _, files in os.walk(directory):
-        for file in files:
-            ext = Path(file).suffix.lower()
-            bucket = bucket_by_ext.get(ext)
-
-            if bucket is None:
-                continue
-            full_path = Path(root) / file
-            file_path_dict[bucket].append(full_path)
-
-    for bucket, files in file_path_dict.items():
-        if not files:
-            print(f" | No files found for {bucket} file types")
-         
-    return file_path_dict
-
-def process_files(directory, file_path_dict, file_type, organization, cor_dict):
-    """   
-    Derives relative path, file size, file name, sample name.
-    Maps patient id to sample id.
-    Writes above information into dictionary for each file.
-    
-    Args:
-        directory (str): The directory to create relative path with
-        file_path_dict (dict): Dictionary containing raw, processed, summarised as keys and file paths as values
-        file_type (str): Specifies either raw, processed or summarised
-        organization (str): Organization that the data files are from, can be modified in params.py
-        cor_dict: The dictionary containing the keys as sample_id and values as patient_id
-    
-    Returns:
-        list: A list of dictionaries summarising the file details.
-    """
-
-    file_list = []
-    total_size = 0
-    print(f"Processing the {file_type} files")
-
-    for full_path in file_path_dict[file_type]:
-
-        relative_path = full_path.relative_to(directory)
-        file_path = f"./{relative_path.as_posix()}"
-        file_size = round(os.path.getsize(full_path) / CONVERT_FROM_BYTES)
-        total_size += file_size
-        file_name = Path(full_path).name
-        sample_name = Path(full_path).stem
-
-        # establish file name
-        metadata_dict = {
-            "file_name": file_name,
-            "file_size": file_size, 
-            "patient_id": cor_dict.get(sample_name, ""),
-            "sample_id": sample_name,
-            "directory": file_path,
-            "organization": organization
-        }
-
-        print(f" | {file_path}  ~{file_size}{FILE_SIZE_UNIT}")
-
-        # check here to prevent duplicates
-        if metadata_dict not in file_list:
-            file_list.append(metadata_dict)
-
-    print(f" | Total size for these files: {total_size}{FILE_SIZE_UNIT}")
-                        
-    return file_list
-
-
-def generate_json(directory, output_file):
-    """
-    Generates a JSON summary of files in the specified directory using RO‑Crate.
-    The directory is recursively scanned for raw, processed, and summarised files.
-    Each file is registered in the RO‑Crate with enriched metadata.
-    
-    Args:
-        directory (str): The directory to analyze.
-        output_file (str): The path where the JSON output will be saved.
-    """
-    if not directory.is_dir():
-        raise ValueError(f"The specified path '{directory}' is not a valid directory.")
-    
-  
-    # Load metadata from the provided metadata file.
-    config = load_json(directory / "config.json")
-    cor_dict = load_json(directory / "patient_sample_mapping.json")
-    organization = ORGANIZATION
-
-    file_path_dict = filter_files(directory, config)
-
-    print(f"\nProcessing raw files ({', '.join(RAW_FILE_TYPES)})")
-    raw_files = process_files(directory, file_path_dict, "raw", organization, cor_dict) 
-
-    print(f"\nProcessing processed files ({', '.join(PROCESSED_FILE_TYPES)})")
-    processed_files = process_files(directory, file_path_dict, "processed", organization, cor_dict) 
-   
-    print(f"\nProcessing summarised files ({', '.join(SUMMARISED_FILE_TYPES)})")
-    summarised_files = process_files(directory, file_path_dict, "summarised", organization, cor_dict)     
-    # summarised_files = process_files_for_summarised(directory, SUMMARISED_FILE_TYPES, organization, cor_dict)
-    
-    # Build the final output structure.
-    output_data = {
+    # Output
+    out_data = {
         "data": {
-            "location": directory.as_posix(),
-            "file_size_unit": FILE_SIZE_UNIT,
-            "files": {
-                "raw": raw_files,
-                "processed": processed_files,
-                "summarised": summarised_files
-            }
+            "location": str(data_dir),
+            "file_size_unit": "KB",
+            "files": files
         }
     }
     
-    
-    # Write the custom JSON summary.
-    with open(output_file, "w") as f:
-        json.dump(output_data, f, indent=4)
-    
-    print(f"\nJSON file generated at: {output_file}")
-
+    json_path = data_dir / "output.json"
+    with open(json_path, "w") as f:
+        json.dump(out_data, f, indent=4)
+        
+    print(f"\nJSON output: {json_path}")
+    if args.verbose:
+        print(f"Total size: {size} KB")
+        
+    # HMTL
+    generate_html(json_path, data_dir / "output.html", ORGANIZATION)
 
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 2:
-        print("Usage: python update_local.py /path/to/files")
-        sys.exit(1)
-    
-    # The target directory should be the 'files' subfolder.
-    target_directory = Path(sys.argv[1])
-    print(f"\nSearching through {target_directory} .........")
-    
-    # Determine output file paths relative to the script's directory.
-    script_directory = Path(__file__).parent
-    output_file_path = target_directory / OUTPUT_JSON_FILE_NAME
-    output_html_path = target_directory / OUTPUT_HTML_FILE_NAME
-    
-    try:
-        generate_json(target_directory, output_file_path)
-        generate_html_from_json(output_file_path, output_html_path)
-    except Exception as e:
-        print(f"Error: {e}")
+    main()

@@ -1,0 +1,22 @@
+{
+    "raw": [
+        ".fastq",
+        ".fastq.gz",
+        ".bam",
+        ".cram",
+        ".czi",
+        ".tif",
+        ".tiff"
+    ],
+    "processed": [
+        ".bam",
+        ".cram",
+        ".ome.tif"
+    ],
+    "summarised": [
+        ".vcf",
+        ".maf",
+        ".csv",
+        ".tsv"
+    ]
+}

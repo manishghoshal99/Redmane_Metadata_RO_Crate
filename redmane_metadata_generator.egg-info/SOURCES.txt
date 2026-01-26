@@ -1,0 +1,16 @@
+README.md
+setup.py
+redmane/__init__.py
+redmane/config.py
+redmane/generate_html.py
+redmane/generator.py
+redmane/params.py
+redmane/sample_metadata/sample_metadata.json
+redmane/sample_metadata/sample_metadata_ori.json
+redmane/sample_metadata/sample_to_patient.json
+redmane_metadata_generator.egg-info/PKG-INFO
+redmane_metadata_generator.egg-info/SOURCES.txt
+redmane_metadata_generator.egg-info/dependency_links.txt
+redmane_metadata_generator.egg-info/entry_points.txt
+redmane_metadata_generator.egg-info/requires.txt
+redmane_metadata_generator.egg-info/top_level.txt
