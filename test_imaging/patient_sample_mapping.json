@@ -1,4 +1,22 @@
 {
-    "sample1": "Patient1",
-    "sample2": "Patient2"
+  "XY001-AGRF": "PatientID001_DiseaseX",
+  "XY001-CDI": "PatientID001_DiseaseX",
+  "XY002-AGRF": "PatientID002_DiseaseX",
+  "XY002-CDI": "PatientID002_DiseaseX",
+  "XY003-AGRF": "PatientID003_DiseaseX",
+  "XY003-CDI": "PatientID003_DiseaseX",
+  "XY004-AGRF": "PatientID004_DiseaseX",
+  "XY004-CDI": "PatientID004_DiseaseX",
+  "XY005-AGRF": "PatientID005_DiseaseX",
+  "XY005-CDI": "PatientID005_DiseaseX",
+  "XY006-AGRF": "PatientID006_DiseaseX",
+  "XY006-CDI": "PatientID006_DiseaseX",
+  "XY007-AGRF": "PatientID007_DiseaseX",
+  "XY007-CDI": "PatientID007_DiseaseX",
+  "XY008-AGRF": "PatientID008_DiseaseX",
+  "XY008-CDI": "PatientID008_DiseaseX",
+  "XY009-AGRF": "PatientID009_DiseaseX",
+  "XY009-CDI": "PatientID009_DiseaseX",
+  "XY010-AGRF": "PatientID010_DiseaseX",
+  "XY010-CDI": "PatientID010_DiseaseX"
 }

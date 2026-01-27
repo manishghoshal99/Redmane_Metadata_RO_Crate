@@ -1,2 +1,0 @@
-[console_scripts]
-redmane-ingest = redmane.generator:main
